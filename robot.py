@@ -8,6 +8,7 @@ from phoenix6.controls import DutyCycleOut
 from wpimath.controller import PIDController
 
 from components.elevator import Elevator 
+from components.leds import LEDs
 
 pn = wpilib.SmartDashboard.putNumber
 gn = wpilib.SmartDashboard.getNumber
@@ -18,6 +19,7 @@ class MyRobot(magicbot.MagicRobot):
     # Each function prints when it runs to understand the robot's lifecycle
 
     elevator: Elevator
+    leds: LEDs
 
     def createObjects(self):
         print("Robot objects created!")
@@ -34,10 +36,16 @@ class MyRobot(magicbot.MagicRobot):
     def disabledPeriodic(self) -> None:
         # Called periodically when the robot is disabled
         # print("Disabled periodic running!")
+        if (wpilib.DriverStation.isDSAttached()):
+            self.leds.set_colorRGB((0, 255, 0))
+        else:
+            self.leds.set_colorRGB((255, 0, 0))
+        self.leds.execute()
         return
 
     def autonomousInit(self) -> None:
         # Called once when autonomous mode starts
+        self.leds.set_colorRGB((255, 0, 255))
         print("Autonomous mode is starting!")
 
     def autonomousPeriodic(self) -> None:
@@ -46,6 +54,7 @@ class MyRobot(magicbot.MagicRobot):
 
     def teleopInit(self) -> None:
         # Called once when teleop mode starts
+        self.leds.rainbow()
         print("Teleop mode is starting!")
 
     def teleopPeriodic(self) -> None:
